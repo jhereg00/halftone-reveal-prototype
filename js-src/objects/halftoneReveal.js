@@ -38,17 +38,17 @@ var Dot = function (gridX, gridY, halftoneReveal) {
   this.x = gridX + (gridY % 2 == 1 && gridX % 2 == 0 ? 1 : 0);
   this.y = gridY;
   // pixel x,y
-  this.ctxX = this.x * DOT_SIZE + DOT_SIZE / 2;
-  this.ctxY = this.y * DOT_SIZE + DOT_SIZE / 2;
+  this.ctxX = this.x * DOT_SIZE;// + DOT_SIZE / 2;
+  this.ctxY = this.y * DOT_SIZE;// + DOT_SIZE / 2;
 
   // parent halftoneReveal
   this.halftoneReveal = halftoneReveal;
 
   this.maxRadius = DOT_SIZE;
-  if (this.x === 0 || this.x >= this.halftoneReveal.dotsX - 1)
-    this.maxRadius /= 2;
-  if (this.y === 0 || this.y >= this.halftoneReveal.dotsY - 1)
-    this.maxRadius /= 2;
+  // if (this.x === 0 || this.x >= this.halftoneReveal.dotsX - 1)
+  //   this.maxRadius /= 2;
+  // if (this.y === 0 || this.y >= this.halftoneReveal.dotsY - 1)
+  //   this.maxRadius /= 2;
 
   // determine when to draw
   this.percentage = (this.x + this.y) / (this.halftoneReveal.dotsX + this.halftoneReveal.dotsY);
@@ -85,8 +85,8 @@ Dot.prototype = {
 var HalftoneReveal = function (baseElement, ratio) {
   this.baseElement = baseElement;
   this.canvas = document.createElement('canvas');
-  this.canvas.width = this.baseElement.offsetWidth;
-  this.canvas.height = ratio ? this.baseElement.offsetWidth * ratio : this.baseElement.offsetWidth / 2;
+  this.canvas.width = this.baseElement.offsetWidth + 30;
+  this.canvas.height = (ratio ? this.baseElement.offsetWidth * ratio : this.baseElement.offsetWidth / 2) + 30;
   this.baseElement.appendChild(this.canvas);
   this.ctx = this.canvas.getContext('2d');
 
@@ -101,8 +101,8 @@ var HalftoneReveal = function (baseElement, ratio) {
   ]
 
   // make the dots
-  this.dotsX = Math.floor(this.canvas.width / DOT_SIZE);
-  this.dotsY = Math.floor(this.canvas.height / DOT_SIZE);
+  this.dotsX = Math.floor(this.canvas.width / DOT_SIZE) + 1;
+  this.dotsY = Math.floor(this.canvas.height / DOT_SIZE) + 2;
   this.dots = [];
   for (var i = 0, len = this.dotsX * this.dotsY; i < len; i+=2) {
     this.dots.push(new Dot(i % this.dotsX, Math.floor(i / this.dotsX), this));
