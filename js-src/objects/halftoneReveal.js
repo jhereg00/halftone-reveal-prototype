@@ -35,7 +35,7 @@ return 1.5 - Math.sqrt(-2 * percentage + 2);
  *  the Dot class
  */
 var Dot = function (gridX, gridY, halftoneReveal) {
-  this.x = gridX + (gridY % 2 == 1 ? 1 : 0);
+  this.x = gridX + (gridY % 2 == 1 && gridX % 2 == 0 ? 1 : 0);
   this.y = gridY;
   // pixel x,y
   this.ctxX = this.x * DOT_SIZE + DOT_SIZE / 2;
@@ -145,12 +145,18 @@ HalftoneReveal.prototype = {
 }
 
 // auto-init
-var htrEl = document.querySelector('.halftone-reveal');
-var htr = new HalftoneReveal(htrEl);
+var htrEls = document.querySelectorAll('.halftone-reveal');
+var htrs = [];
+for (var i = 0, len = htrEls.length; i < len; i++) {
+  htrs.push(new HalftoneReveal(htrEls[i]));
+}
 
 // listen for scroll
 window.addEventListener('scroll', function (e) {
-  var scrollPerc = htr.getPercentageFromScroll();
-  if (scrollPerc >= 0 && scrollPerc <= 1)
-    htr.draw(scrollPerc);
+  for (var i = 0, len = htrs.length; i < len; i++) {
+    var htr = htrs[i];
+    var scrollPerc = htr.getPercentageFromScroll();
+    if (scrollPerc >= 0 && scrollPerc <= 1)
+      htr.draw(scrollPerc);
+  }
 });
